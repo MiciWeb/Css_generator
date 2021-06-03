@@ -6,7 +6,6 @@ function my_scandir($dir_path){
     {  
     if (substr($file,-3) == "png"){
         array_push($array,$file);
-       
     }
     }
     print_r($array);
