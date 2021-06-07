@@ -16,19 +16,21 @@ function recursive($argv){
         var_dump($array);
     }
 }
+
 function scan($dir){
     if ($dh = opendir($dir)){
         while (($file = readdir($dh)) !== false){
             if ($file !== "." AND $file !== ".." AND $file !== ".git"){
                 if (is_dir($dir . $file)){
-                    scan($dir . $file ."/");
-
+                    scan($dir .$file ."/");
+                    
                 } elseif(pathinfo($file, PATHINFO_EXTENSION) == "png"){
                     echo $file . "\n";
                 }
+                
         }
     }
     closedir($dh);
     }
 }
-scan(".");
+scan("./");
