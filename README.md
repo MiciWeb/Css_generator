@@ -16,6 +16,6 @@
 ### Fabriqué avec
 * [php](https://php.net) - Language de programmation
 
-### Auteurs
+### Auteur
 
 * **Micipsa Sersour** _alias_ [@Mici92](https://github.com/Mici92)
