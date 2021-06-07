@@ -62,23 +62,41 @@ function generate_sprite($array){
 
         // ajoute la partie html et la class du sprite généré dans le fichier style
         $fichier = fopen($style_name, "c");
-        fwrite($fichier, "html{\nposition: relative;\nheight: 30px;\nwidth: 30px;\n}\n.image{\nbackground: url('sprite.png') no-repeat;\nwidth:100vw;\nheight: 30px;\nleft: 0;\ntop: 0;\n}\n");
-        fclose($fichier);
+        fwrite($fichier, "html{\nposition: relative;\nheight: ".$imgheight."px;\nwidth: ".$imgwidth."px;\n}\n.image{\nbackground: url('".$sprite_name."') no-repeat;\nwidth:100vw;\nheight: ".$imgheight."px;\nleft: 0;\ntop: 0;\n}\n");
 
         // crée une balise class pour chaque images données en paramètre
+        $position_array=[];
         if (array_key_first($array) == 4){
             $fix_key_bug = array_reverse($array);
+           
+            fwrite($fichier, ".image-1{\nposition: absolute;\nbackground: url('".$sprite_name."') no-repeat;\nwidth:100%;\nheight: ".$imgheight."px;\nleft: 0;\ntop: 0;\nbackground-position: 0px;\n}\n");
+
+            fclose($fichier);
+
+            array_shift($fix_key_bug);
             foreach($fix_key_bug as $key => $file){
-                $key1 = $key+1;
-                $content = ".image-".$key1."{\nposition: absolute;\nbackground: url('sprite.png') no-repeat;\nwidth:100%;\nheight: 30px;\nleft: 0;\ntop: 0;\nbackground-position: ".$clip."px;\n}\n";
+                $key1 = $key+2;
+                $clip -= $imgwidth;
+                var_dump($key1);
+
+                $content = ".image-".$key1."{\nposition: absolute;\nbackground: url('".$sprite_name."') no-repeat;\nwidth:100%;\nheight: ".$imgheight."px;\nleft: 0;\ntop: 0;\nbackground-position: ".$clip."px;\n}\n";
                 file_put_contents($style_name,$content,FILE_APPEND);
+
             }
+
         }else{
+            // array_push($position_array,$clip);
+            // array_unshift($position_array,0);
+            // $array_int = implode(',',$position_array);
+            
+            fwrite($fichier, ".image-1{\nposition: absolute;\nbackground: url('".$sprite_name."') no-repeat;\nwidth:100%;\nheight: ".$imgheight."px;\nleft: 0;\ntop: 0;\nbackground-position: 0px;\n}\n");
+            fclose($fichier);
+            array_shift($array);
             foreach ($array as $key => $file){
-                $key1 = $key+1;
-    
-                $clip -= 30;
-                $content = ".image-".$key1."{\nposition: absolute;\nbackground: url('sprite.png') no-repeat;\nwidth:100%;\nheight: 30px;\nleft: 0;\ntop: 0;\nbackground-position: ".$clip."px;\n}\n";
+                $key1 = $key +2;
+                $clip -= $imgwidth;
+                var_dump($key1);
+                $content = ".image-".$key1."{\nposition: absolute;\nbackground: url('".$sprite_name."') no-repeat;\nwidth:100%;\nheight: ".$imgheight."px;\nleft: 0;\ntop: 0;\nbackground-position: ".$clip."px;\n}\n";
                 file_put_contents($style_name,$content,FILE_APPEND);
             }
         }
