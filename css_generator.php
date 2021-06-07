@@ -1,12 +1,7 @@
 <?php
 function generate_sprite($array){
-    $imgwidth = 30;
-    $imgheight = 30;   
     $sprite_name = "sprite.png";
     $style_name = 'style.css';
-    $sprite_width = 0;
-    $sprite_height = $imgheight;
-
     // option -i du man
     if (in_array("-i",$array) ){
 
@@ -26,11 +21,25 @@ function generate_sprite($array){
 
         unset($array[$array_i]);
         unset($array[$array_i +1]);
+
     }
 
-    // genere le fichier sprite //
+    // on attribut les largeur et hauteur des pictures a nos variables
+    foreach($array as $picture){
+        $source = imagecreatefrompng($picture);
+        $imgwidth = imagesx($source);
+        $imgheight = imagesy($source); 
+    }
 
-        // cree des carrés vide "$destination" ou l'on va coller chaque image "$source" bout à bout
+    $sprite_width = 0;
+    $sprite_height = $imgheight;
+
+    
+    // génére le fichier sprite //
+
+   
+
+        // crée des carrés vide "$destination" ou l'on va coller chaque image "$source" bout à bout
         foreach ($array as $picture) {
             $sprite_width += $imgwidth;
         }
@@ -38,15 +47,14 @@ function generate_sprite($array){
 
         $pos = 0;
 
-        foreach($array as $picture){
-            $source = imagecreatefrompng($picture);
-            
+        foreach($array as $picture){   
+            $source = imagecreatefrompng($picture);         
             imagecopy($destination, $source, $pos, 0, 0, 0, $imgwidth, $imgheight);
         
             $pos += $imgwidth;
         }
     
-        // cree le fichier final sprite
+        // crée le fichier final sprite
         imagepng($destination,$sprite_name);
     
     // génére le fichier style //
@@ -58,11 +66,21 @@ function generate_sprite($array){
         fclose($fichier);
 
         // crée une balise class pour chaque images données en paramètre
-        foreach ($array as $key => $file){
-            $key1 = $key+1;
-            $clip -= 30;
-            $content = ".image-".$key1."{\nposition: absolute;\nbackground: url('sprite.png') no-repeat;\nwidth:100%;\nheight: 30px;\nleft: 0;\ntop: 0;\nbackground-position: ".$clip."px;\n}\n";
-            file_put_contents($style_name,$content,FILE_APPEND);
+        if (array_key_first($array) == 4){
+            $fix_key_bug = array_reverse($array);
+            foreach($fix_key_bug as $key => $file){
+                $key1 = $key+1;
+                $content = ".image-".$key1."{\nposition: absolute;\nbackground: url('sprite.png') no-repeat;\nwidth:100%;\nheight: 30px;\nleft: 0;\ntop: 0;\nbackground-position: ".$clip."px;\n}\n";
+                file_put_contents($style_name,$content,FILE_APPEND);
+            }
+        }else{
+            foreach ($array as $key => $file){
+                $key1 = $key+1;
+    
+                $clip -= 30;
+                $content = ".image-".$key1."{\nposition: absolute;\nbackground: url('sprite.png') no-repeat;\nwidth:100%;\nheight: 30px;\nleft: 0;\ntop: 0;\nbackground-position: ".$clip."px;\n}\n";
+                file_put_contents($style_name,$content,FILE_APPEND);
+            }
         }
     
 }
@@ -78,14 +96,16 @@ function my_scan_dir($argv){
                         array_push($arraypng,$files);
                     }
                 }
-                $array = array_merge($arraypng,array_slice($argv,1));
+
+                $array_rev = array_merge($arraypng,array_slice(array_reverse($argv),1));
+                $array = array_reverse($array_rev);
+
             closedir($dir);
     }else{
         $array = [];
         foreach($argv as $files){
             array_push($array,$files);
         }
-        var_dump($array);
 
     }
     
@@ -93,3 +113,5 @@ function my_scan_dir($argv){
 
 }
 my_scan_dir($argv);
+
+// html images x 
