@@ -1,0 +1,43 @@
+html{
+            
+position: relative;
+            
+height: px;
+            
+width: px;
+}
+            
+.image{
+            
+background: url('sprite.png') no-repeat;
+            
+width:100vw;
+height: px;
+            
+left: 0;
+            
+top: 0;
+            
+}
+            
+
+            .image-1{
+position: absolute;
+                
+background: url('sprite.png') no-repeat;
+                
+width:100%;
+                
+height: px;
+                
+left: 0;
+                
+top: 0;
+                
+background-position: 0px;
+}
+px;
+left: 0;
+top: 0;
+background-position: -64px;
+}
