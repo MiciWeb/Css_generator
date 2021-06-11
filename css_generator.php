@@ -2,6 +2,7 @@
 // // 2eme nom
 // // oe bof zehma tu met le nom de l'image et ca recup le fichierc precis
 // // recursive if sans argv
+
 // function generate_sprite($array){
 //     $sprite_name = "sprite.png";
 //     $style_name = 'style.css';
@@ -147,20 +148,41 @@
 
 function my_scan_dir($argv){
     global $array;
+    array_shift($argv);
+    
     // option -r recursive
-    if(in_array("-r",$argv)){
+    if(in_array("-r",$argv) and is_dir(implode(" ",$argv))){
+
         // si on trouve -r on le supprime
         $array_r = array_search("-r",$argv);
         unset($argv[$array_r]);
 
         // transforme l'array argv en string
-        array_shift($argv);
         $dir_path = [];
         array_push($dir_path,implode(" ",$argv));
         $dir_path_string = implode(' ',$dir_path);
         $array = [];
+
         my_recursive($dir_path_string);
+
+    }elseif(is_dir(implode(" ",$argv))){
+
+        $dh = opendir(implode(" ",$argv));
+        $array = [];
+            while(($files = readdir($dh)) !== false){
+                if (substr($files,-3) == "png"){
+                    array_push($array,$files);
+                    echo $files;
+                    echo "dir";
+                }
+            }
+
+            $array_rev = array_merge($array,array_slice(array_reverse(implode(" ",$argv)),1));
+            $array = array_reverse($array_rev);
+
+        closedir($dh);
     }
+
 }
 my_scan_dir($argv);
 
