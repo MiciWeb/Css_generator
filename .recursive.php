@@ -1,20 +1,21 @@
 <?php
 function recursive($argv){
     array_shift($argv);
-    if(is_dir(implode(" ",$argv))){ 
-        $dir = opendir(implode(" ",$argv));
-        $array = [];
-        while(($files = readdir($dir)) !== false) {  
-            if (substr($files,-3) == "png"){
-            array_push($array,$files);
-            }
-            recursive($argv);
+    var_dump(end($argv));
+    // if(is_dir(end($argv))){ 
+    //     $dir = opendir(implode(" ",$argv));
+    //     $array = [];
+    //     while(($files = readdir($dir)) !== false) {  
+    //         if (substr($files,-3) == "png"){
+    //         array_push($array,$files);
+    //         }
+    //         recursive($argv);
 
-        }
-        closedir($dir);
+    //     }
+    //     closedir($dir);
 
-        var_dump($array);
-    }
+    //     var_dump($array);
+    // }
 }
 
 
