@@ -116,39 +116,55 @@ function generate_sprite(){
     global $sprite_name;
     global $style_name;
 
-    // REVIEW Generate sprite image
-        // NOTE: on attribut les largeur et hauteur des pictures a nos variables
-            foreach($array as $picture){
-                $source = imagecreatefrompng($picture);
-                $imgwidth = imagesx($source);
-                $imgheight = imagesy($source); 
-            }
-            $sprite_height = 0;
-            $sprite_width = 0;
+    $img_height_max = [];
+    $img_width_max = [];
 
-        // NOTE: crée des carrés vide "$destination" ou l'on va coller chaque image "$source" bout à bout
-            foreach ($array as $picture) {
-                $sprite_width += $imgwidth;
+    // définit les tailles
+        foreach($array as $picture){
+            $source = imagecreatefrompng($picture);
+            $img_width = imagesx($source);
+            $img_height = imagesy($source); 
+            array_push($img_height_max,$img_height);
+            array_push($img_width_max,$img_width);
+        }    
 
-            }
-            // width  = toutes les images, hauteur de la plus grosse
-            $destination = imagecreatetruecolor($sprite_width, $sprite_height);
-            
-            $pos = 0;
+    // incrémente et corréle
+        $sprite_width = 0;
+        foreach ($array as $picture) {
+            $sprite_width += max($img_width_max);
+        }
+            $destination = imagecreatetruecolor($sprite_width, max($img_height_max));
 
-            foreach($array as $picture){   
-                $source = imagecreatefrompng($picture);         
-                imagecopy($destination, $source, $pos, 0, 0, 0, $imgwidth, $imgheight);
-                $pos += $imgwidth;
+        foreach($array as $picture){   
+            $source = imagecreatefrompng($picture);         
+            imagecopy($destination, $source, $pos_x, 0, 0, 0, $sprite_width, max($img_height_max));
+
+            $pos_x += max($img_width_max);
+        }
+
+    // crée le fichier final sprite
+      imagepng($destination,$sprite_name);
+
+    // génére le fichier style //
+        // ajoute la partie html et la class du sprite généré dans le fichier style
+        $fichier = fopen($style_name, "c");
+        fwrite($fichier, "html{\n\tposition: relative;\n\theight: ".max($img_width_max)."px;\n\twidth: ".max($img_width_max)."px;\n}.image{\n\tbackground: url('".$sprite_name."') no-repeat;\n\twidth:100vw;\n\theight: ".max($img_height_max)."px;\n\tleft: 0;\n\ttop: 0;\n}\n");
+        fwrite($fichier, ".image-1{\n\tposition: absolute;\n\tbackground: url('".$sprite_name."') no-repeat;\n\twidth:100%;\n\theight: ".max($img_height_max)."px;\n\tleft: 0;\n\ttop: 0;\n\tbackground-position: 0px;\n}\n");
+        // crée une balise class pour chaque images données en paramètre
+        $position_array=[];
+        array_shift($array);
+        var_dump($array);
+            foreach ($array as $key => $file){
+                $key1 = $key +2;
+                $position_x -= max($img_width_max);
+                fwrite($fichier, ".image-".$key1."{\n\tposition: absolute;\n\tbackground: url('".$sprite_name."') no-repeat;\n\twidth:100%;\n\theight: ".max($img_height_max)."px;\n\tleft: 0;\n\ttop: 0;\n\tbackground-position: ".$position_x."px;\n}\n");
             }
-                
-        // crée le fichier final sprite
-            imagepng($destination,$sprite_name);
+            var_dump($array);
+
+            fclose($fichier);
     
+}
 
-    // REVIEW Generate sprite image
-            
-
-
-
+function generate_css(){
+    
 }
