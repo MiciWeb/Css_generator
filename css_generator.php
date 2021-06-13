@@ -7,6 +7,7 @@ function my_scan_dir($argv){
     $style_name = "style.css";
     array_shift($argv);
 
+
     // NOTE option -i --output-image
         if (in_array("-i",$argv) OR in_array("--output-image",$argv) ){
              if(in_array("-i",$argv)){
@@ -51,8 +52,6 @@ function my_scan_dir($argv){
                 $array_without_option = end($argv);
                 unset($argv[$array_if_option_exist]);
                 
-                var_dump($array_without_option);
-
                 // transforme argv en string pour que la recursive marche
                 $dir_path = [];
                 array_push($dir_path,$array_without_option);
@@ -81,7 +80,22 @@ function my_scan_dir($argv){
                     array_push($array,$files);
                 }
             }
-
+            
+    // // NOTE option -c --columns_number (bonus)
+    // if (in_array("-c",$argv) OR in_array("--columns_number",$argv) ){
+    //     if(in_array("-i",$argv)){
+    //         $array_if_option_exist = array_search("-c",$argv);
+    //     }else{
+    //         $array_if_option_exist = array_search("--columns_number",$argv);
+    //     }
+    //         // sélectionne l'option et le nom de l'image
+    //         $column_number = $argv[$array_if_option_exist +1];
+    //         array_splice($array,$column_number);
+    //         // supprime l'option et le nom de l'image
+    //         unset($argv[$array_if_option_exist +1]);
+    //         unset($argv[$array_if_option_exist]);
+    //     }
+    
     generate_sprite($array);
 }
 my_scan_dir($argv);
@@ -149,7 +163,6 @@ function generate_sprite($array){
             array_unshift($all_img_width,0);
             
             foreach ($array as $key => $file){
-                var_dump($file);
                 $key1 = $key +1;
                 $position_x -= $all_img_width[$key];
                 fwrite($fichier, ".image-".$key1."{\n\tposition: absolute;\n\tbackground: url('".$sprite_name."') no-repeat;\n\twidth:".$all_img_width_for_position_x[$key]."px;\n\theight: ".max($img_height_max)."px;\n\tleft: 0;\n\ttop: 0;\n\tbackground-position: ".$position_x."px;\n}\n");
