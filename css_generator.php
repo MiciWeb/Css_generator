@@ -1,243 +1,161 @@
 <?php
-// // 2eme nom
-// // oe bof zehma tu met le nom de l'image et ca recup le fichierc precis
-// // recursive if sans argv
-
-// function generate_sprite($array){
-//     $sprite_name = "sprite.png";
-//     $style_name = 'style.css';
-//     // option -i du man
-//     if (in_array("-i",$array) ){
-
-//         $array_i = array_search("-i",$array);
-
-//         $sprite_name = $array[$array_i +1];
-
-//         unset($array[$array_i]);
-//         unset($array[$array_i +1]);
-//         // unset spritename direct 
-//       }
-
-//     // option -s du man
-//     if(in_array("-s",$array)){
-//         $array_i = array_search("-s",$array);
-
-//         $style_name = $array[$array_i +1];
-
-//         unset($array[$array_i]);
-//         unset($array[$array_i +1]);
-
-//     }
-
-//     // on attribut les largeur et hauteur des pictures a nos variables
-//     foreach($array as $picture){
-//         $source = imagecreatefrompng($picture);
-//         $imgwidth = imagesx($source);
-//         $imgheight = imagesy($source); 
-//     }
-
-//     $sprite_width = 0;
-//     $sprite_height = $imgheight;
-
-    
-//     // génére le fichier sprite //
-
-   
-
-//         // crée des carrés vide "$destination" ou l'on va coller chaque image "$source" bout à bout
-//         foreach ($array as $picture) {
-//             $sprite_width += $imgwidth;
-//         }
-//         $destination = imagecreatetruecolor($sprite_width, $sprite_height);
-
-//         $pos = 0;
-
-//         foreach($array as $picture){   
-//             $source = imagecreatefrompng($picture);         
-//             imagecopy($destination, $source, $pos, 0, 0, 0, $imgwidth, $imgheight);
-    
-//             $pos += $imgwidth;
-//         }
-    
-//         // crée le fichier final sprite
-//         imagepng($destination,$sprite_name);
-    
-//     // génére le fichier style //
-
-
-//         // ajoute la partie html et la class du sprite généré dans le fichier style
-//         $fichier = fopen($style_name, "c");
-//         fwrite($fichier, "html{
-//             \nposition: relative;
-//             \nheight: ".$imgheight."px;
-//             \nwidth: ".$imgwidth."px;\n}
-//             \n.image{
-//             \nbackground: url('".$sprite_name."') no-repeat;
-//             \nwidth:100vw;\nheight: ".$imgheight."px;
-//             \nleft: 0;
-//             \ntop: 0;
-//             \n}
-//             \n");
-
-//         // crée une balise class pour chaque images données en paramètre
-//         $position_array=[];
-//         if (array_key_first($array) == 4){
-//             $fix_key_bug = array_reverse($array);
-           
-//             fwrite($fichier, "
-//             .image-1{\nposition: absolute;
-//                 \nbackground: url('".$sprite_name."') no-repeat;
-//                 \nwidth:100%;
-//                 \nheight: ".$imgheight."px;
-//                 \nleft: 0;
-//                 \ntop: 0;
-//                 \nbackground-position: 0px;\n}\n");
-
-//             fclose($fichier);
-
-//             array_shift($fix_key_bug);
-//             foreach($fix_key_bug as $key => $file){
-//                 $key1 = $key+2;
-//                 $clip -= $imgwidth;
-//                 var_dump($key1);
-
-//                 $content = ".image-".$key1."{
-//                     \nposition: absolute;
-//                     \nbackground: url('".$sprite_name."') no-repeat;
-//                     \nwidth:100%;\nheight: ".$imgheight."px;
-//                     \nleft: 0;
-//                     \ntop: 0;
-//                     \nbackground-position: ".$clip."px;\n}\n";
-//                 file_put_contents($style_name,$content,FILE_APPEND);
-
-//             }
-
-//         }else{
-//             // array_push($position_array,$clip);
-//             // array_unshift($position_array,0);
-//             // $array_int = implode(',',$position_array);
-            
-//             fwrite($fichier, "
-//             .image-1{\nposition: absolute;
-//                 \nbackground: url('".$sprite_name."') no-repeat;
-//                 \nwidth:100%;
-//                 \nheight: ".$imgheight."px;
-//                 \nleft: 0;
-//                 \ntop: 0;
-//                 \nbackground-position: 0px;\n}\n");
-//             fclose($fichier);
-//             array_shift($array);
-//             foreach ($array as $key => $file){
-//                 $key1 = $key +2;
-//                 $clip -= $imgwidth;
-//                 var_dump($key1);
-//                 $content = ".image-".$key1."{
-//                     \nposition: absolute;
-//                     \nbackground: url('".$sprite_name."') no-repeat;
-//                     \nwidth:100%;\nheight: ".$imgheight."px;
-//                     \nleft: 0;
-//                     \ntop: 0;
-//                     \nbackground-position: ".$clip."px;\n}\n";
-//                 file_put_contents($style_name,$content,FILE_APPEND);
-//             }
-//         }
-    
-// }
-
-
-
 function my_scan_dir($argv){
     global $array;
+    global $sprite_name;
+    global $style_name;
+    $sprite_name = "sprite.png";
+    $style_name = "style.css";
     array_shift($argv);
-    
-    // option -r recursive
-    if(in_array("-r",$argv) and is_dir(implode(" ",$argv))){
 
-        // si on trouve -r on le supprime
-        $array_r = array_search("-r",$argv);
-        unset($argv[$array_r]);
+    // NOTE option -i --output-image
+        if (in_array("-i",$argv) OR in_array("--output-image",$argv) ){
+             if(in_array("-i",$argv)){
+                    $array_if_option_exist = array_search("-i",$argv);
+                }else{
+                    $array_if_option_exist = array_search("--output-image",$argv);
+                }
+                    // sélectionne l'option et le nom de l'image
+                    $array_sprite_name = $argv[$array_if_option_exist +1];
+                    $sprite_name = $array_sprite_name;
 
-        // transforme l'array argv en string
-        $dir_path = [];
-        array_push($dir_path,implode(" ",$argv));
-        $dir_path_string = implode(' ',$dir_path);
-        $array = [];
+                    // supprime l'option et le nom de l'image
+                    unset($argv[$array_if_option_exist +1]);
+                    unset($argv[$array_if_option_exist]);
+                }
+        
+    // NOTE option -s --output-style
+        if (in_array("-s",$argv) OR in_array("--output-style",$argv) ){
+             if(in_array("-s",$argv)){
+                    $array_if_option_exist = array_search("-s",$argv);
+                }else{
+                    $array_if_option_exist = array_search("--output-style",$argv);
+                }
+                    // sélectionne l'option et le nom du style
+                    $array_style_name = $argv[$array_if_option_exist +1];
+                    $style_name = $array_style_name;
 
-        my_recursive($dir_path_string);
+                    // supprime l'option et le nom du style
+                    unset($argv[$array_if_option_exist +1]);
+                    unset($argv[$array_if_option_exist]);
+                }
 
-    }elseif(is_dir(implode(" ",$argv))){
+    // NOTE: option -r --recursive
+        if(in_array("-r",$argv) OR in_array("--recursive",$argv)){
 
-        $dh = opendir(implode(" ",$argv));
-        $array = [];
-            while(($files = readdir($dh)) !== false){
-                if (substr($files,-3) == "png"){
+                //si on trouve -r ou --recursive dans l'argv on le supprime
+                if(in_array("-r",$argv)){
+                    $array_if_option_exist = array_search("-r",$argv);
+                }else{
+                    $array_if_option_exist = array_search("--recursive",$argv);
+                }
+                $array_without_option = end($argv);
+                unset($argv[$array_if_option_exist]);
+                
+                var_dump($array_without_option);
+
+                // transforme argv en string pour que la recursive marche
+                $dir_path = [];
+                array_push($dir_path,$array_without_option);
+                $dir_path_string = implode(' ',$dir_path);
+                $array = [];
+
+                my_recursive($dir_path_string);
+        }
+
+    // NOTE: dir
+        elseif(is_dir(end($argv))){
+            $dh = opendir(end($argv));
+            $array = [];
+                while(($file = readdir($dh)) !== false){
+                    if (substr($file,-3) == "png"){
+                        array_push($array,$file);
+                    }
+                }
+            closedir($dh);
+        }
+
+    // NOTE: file
+            else{
+                $array = [];
+                foreach($argv as $files){
                     array_push($array,$files);
-                    echo $files;
-                    echo "dir";
                 }
             }
 
-            $array_rev = array_merge($array,array_slice(array_reverse(implode(" ",$argv)),1));
-            $array = array_reverse($array_rev);
-
-        closedir($dh);
-    }
-
+    generate_sprite($array);
 }
 my_scan_dir($argv);
 
 function my_recursive($dir_path_string){
     global $array;
-   if ($dh = opendir($dir_path_string)){
-        while (($file = readdir($dh)) !== false){
-            if ($file !== "." AND $file !== ".." AND $file !== ".git"){
-                if (is_dir($dir_path_string.$file)){
-                    my_recursive($dir_path_string.$file."/");
-                    
-                } elseif(substr($file,-3) == "png"){
-                    array_push($array,$file);
-                    // $array = array_merge($array_r,explode(" ",$dir_path_string.$file));
+    if ($dh = opendir($dir_path_string)){
+         while (($file = readdir($dh)) !== false){
+             if ($file !== "." AND $file !== ".." AND $file !== ".git"){
+                 if (is_dir($dir_path_string.$file)){
+                     my_recursive($dir_path_string.$file."/");
+                     
+                 } elseif(substr($file,-3) == "png"){
+                     array_push($array,$dir_path_string.$file); 
+                 }
+         }
+     }
+     closedir($dh);
+     }
 
-                }
-        }
-    }
-    closedir($dh);
-    }
 }
-function test($mdr){
-    global $array;
-    foreach($array as $value){
-        echo $value."\n";
-    }
+
+function generate_sprite($array){
+    global $sprite_name;
+    global $style_name;
+
+    $img_height_max = [];
+    $img_width_max = [];
+    $all_img_width = [];
+
+    // NOTE: Génére l'image sprite png //
+        // définit les tailles
+            foreach($array as $picture){
+                $source = imagecreatefrompng($picture);
+                $img_width = imagesx($source);
+                $img_height = imagesy($source); 
+                array_push($img_height_max,$img_height);
+                array_push($img_width_max,$img_width);
+                array_push($all_img_width,$img_width);
+            }    
+        // incrémente et corréle
+            $sprite_width = 0;
+            foreach ($array as $key => $picture) {
+                $sprite_width += $all_img_width[$key];   
+            }
+                $destination = imagecreatetruecolor($sprite_width, max($img_height_max));
+
+            foreach($array as $key => $picture){   
+                $source = imagecreatefrompng($picture);         
+                imagecopy($destination, $source, $pos_x, 0, 0, 0, $sprite_width, max($img_height_max));
+                $pos_x += $all_img_width[$key];
+            }
+
+        // crée le fichier final sprite
+            imagepng($destination,$sprite_name);
+
+    // NOTE: Génére le fichier css //
+        
+        $fichier = fopen($style_name, "c");
+        fwrite($fichier, "html{\n\tposition: relative;\n}.image{\n\tbackground: url('".$sprite_name."') no-repeat;\n\twidth:200vw;\n\theight: ".max($img_height_max)."px;\n\tleft: 0;\n\ttop: 0;\n}\n");
+        // crée 2 array différent des img width
+            $position_array=[];
+            $arr = [];
+            $all_img_width_for_position_x = array_merge($arr,$all_img_width);
+            array_unshift($all_img_width,0);
+            
+            foreach ($array as $key => $file){
+                var_dump($file);
+                $key1 = $key +1;
+                $position_x -= $all_img_width[$key];
+                fwrite($fichier, ".image-".$key1."{\n\tposition: absolute;\n\tbackground: url('".$sprite_name."') no-repeat;\n\twidth:".$all_img_width_for_position_x[$key]."px;\n\theight: ".max($img_height_max)."px;\n\tleft: 0;\n\ttop: 0;\n\tbackground-position: ".$position_x."px;\n}\n");
+            }
+
+            fclose($fichier);
 }
-test("mdr");
 
 
-// function my_scan_dir($dir_path){
-//     array_shift($argv);
-//     if(is_dir($argv)){ 
-//             $argvpoint = array_search(".",$argv);
-//             $dir = opendir($arraypoint = $argv[$argvpoint]);
-//             $arraypng = [];
-//                 while(($files = readdir($dir)) !== false){
-//                     if (substr($files,-3) == "png"){
-//                         array_push($arraypng,$files);
-//                         echo $files;
-//                         echo "dir";
-//                     }
-//                 }
-
-//                 $array_rev = array_merge($arraypng,array_slice(array_reverse($argv),1));
-//                 $array = array_reverse($array_rev);
-
-//             closedir($dir);
-//     }else{
-//         $array = [];
-//         foreach($argv as $files){
-//             array_push($array,$files);
-//             echo "files";
-//         }
-//     }
-//     // generate_sprite($array);
-// }
-// my_scan_dir($dir_path);
