@@ -26,4 +26,4 @@ Pour n'afficher qu'une image sur la page "index.html" il faut alors modifier la 
 
 ### Auteur
 
-* **Micipsa Sersour** _alias_ [@Mici92](https://github.com/Mici92)
+* **Micipsa Sersour** _alias_ [@MiciWeb](https://github.com/MiciWeb)
